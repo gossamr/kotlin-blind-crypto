@@ -1,0 +1,29 @@
+# Detekt 2.x config. Layered over the bundled defaults via
+# `buildUponDefaultConfig = true` in the root build script. Lists ONLY the
+# rules that diverge from the defaults in
+# https://github.com/detekt/detekt/blob/v2.0.0-alpha.3/detekt-core/src/main/resources/default-detekt-config.yml
+
+complexity:
+  LongMethod:
+    # Crypto routines (signature assembly, hash-then-reduce sequences) read
+    # better as a single block than split for the sake of the 60-line default.
+    active: false
+
+exceptions:
+  TooGenericExceptionCaught:
+    # We deliberately wrap whatever the upstream EC library throws into
+    # BlindCryptoException.PointDecode so callers see a stable error type.
+    active: false
+
+style:
+  MagicNumber:
+    # Crypto code has many one-off byte-size literals (32, 64) outside the
+    # property/constant/local-variable positions that the defaults already
+    # ignore. Suppressing globally is simpler than annotating each site.
+    active: false
+  MaxLineLength:
+    active: true
+    maxLineLength: 140
+    # RFC 8032 test vectors are canonical single-line hex strings that
+    # exceed any reasonable line limit; don't enforce the rule under tests.
+    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**']

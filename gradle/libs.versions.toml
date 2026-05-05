@@ -1,0 +1,44 @@
+[versions]
+# Pinned to latest stable as of May 2026.
+# Source verification:
+# - Gradle 9.5.0: per user (2026-04 release line)
+# - AGP 9.2.1: developer.android.com/build/releases (stable)
+# - Kotlin 2.2.10: AGP 9.2.1's bundled built-in KGP; the buildscript classpath in root
+#   build.gradle.kts pins the same version explicitly for the KMP plugins.
+# - cryptography-kotlin 0.6.0: github.com/whyoleg/cryptography-kotlin (requires Kotlin 2.2.0+)
+# - curve25519-kotlin 0.0.8: latest tagged release (2025-01-14); no newer available
+# - JUnit 6.0.3: GA (2026-02-15)
+# - detekt 2.0.0-alpha.2: only detekt that supports Kotlin 2.3.x; 1.23.8 stable still on 2.0
+# - JMH plugin 0.7.3: latest (2025-02-17)
+# - JMH core 1.37: latest stable
+agp                 = "9.2.1"
+kotlin              = "2.2.10"
+kotlinxCryptoSubtle = "0.0.4"
+cryptographyKotlin  = "0.6.0"
+junit               = "6.0.3"
+detekt              = "2.0.0-alpha.3"
+jmh                 = "1.37"
+jmhPlugin           = "0.7.3"
+androidxTestJunit   = "1.2.1"
+androidxTestRunner  = "1.6.2"
+
+[libraries]
+kotlinx-crypto-subtle   = { module = "io.github.andreypfau:kotlinx-crypto-subtle",        version.ref = "kotlinxCryptoSubtle" }
+cryptography-core       = { module = "dev.whyoleg.cryptography:cryptography-core",        version.ref = "cryptographyKotlin" }
+cryptography-jdk        = { module = "dev.whyoleg.cryptography:cryptography-provider-jdk", version.ref = "cryptographyKotlin" }
+cryptography-random     = { module = "dev.whyoleg.cryptography:cryptography-random",      version.ref = "cryptographyKotlin" }
+junit-jupiter           = { module = "org.junit.jupiter:junit-jupiter",                   version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",        version.ref = "junit" }
+androidx-test-junit     = { module = "androidx.test.ext:junit",                           version.ref = "androidxTestJunit" }
+androidx-test-runner    = { module = "androidx.test:runner",                              version.ref = "androidxTestRunner" }
+# Used in the root buildscript; matches AGP 9.2.1's bundled built-in KGP.
+kotlin-gradle-plugin    = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin",         version.ref = "kotlin" }
+
+[plugins]
+# AGP 9+: KMP modules must use the dedicated Android KMP library plugin; combining
+# com.android.library with org.jetbrains.kotlin.multiplatform is disallowed under built-in Kotlin.
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-jvm      = { id = "org.jetbrains.kotlin.jvm",     version.ref = "kotlin" }
+detekt          = { id = "dev.detekt",                   version.ref = "detekt" }
+jmh             = { id = "me.champeau.jmh",              version.ref = "jmhPlugin" }
